@@ -1,0 +1,4 @@
+# config.ini.example
+[settings]
+port = 8080
+secret_key = your_secret_key_here

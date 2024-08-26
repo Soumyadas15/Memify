@@ -1,0 +1,41 @@
+# Build artifacts
+build/
+CMakeFiles/
+CMakeCache.txt
+Makefile
+cmake_install.cmake
+*.cmake
+
+# Executables
+Memify
+
+# Object files
+*.o
+*.obj
+
+# Precompiled headers
+*.gch
+*.pch
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.swp
+*.swo
+*.DS_Store
+
+# Sensitive information
+*.env
+config.ini
+
+# Cache files
+.cache/
+
+# IDE-specific files
+.vscode/
+.idea/
+
+# keys
+.mykey.pem
