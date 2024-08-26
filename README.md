@@ -44,7 +44,7 @@ To build and run Memify, you will need:
 
     ```ini
     [settings]
-    hmac_key = "your-generated-32-byte-key"
+    secret_key = "your-generated-32-byte-key"
     port = "8080"
     ```
 
@@ -67,7 +67,7 @@ To build and run Memify, you will need:
 
 ### Configuration
 
-The `config.ini` file is used to configure the server settings and security options. Ensure the paths to your TLS certificate and key files are correct, and update the `hmac_key` with the secure key generated earlier.
+The `config.ini` file is used to configure the server settings and security options. Ensure the paths to your TLS certificate and key files are correct, and update the `secret_key` with the secure key generated earlier.
 
 ### Usage
 
