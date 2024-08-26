@@ -16,7 +16,7 @@ Memify is a lightweight, high-performance in-memory data store implemented in C+
 To build and run Memify, you will need:
 
 - A C++ compiler that supports C++11 or later (e.g., GCC, Clang)
-- OpenSSL library for handling TLS encryption
+- OpenSSL library for secure key generation
 - CMake for building the project
 
 ### Installation
