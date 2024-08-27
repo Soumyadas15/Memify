@@ -67,7 +67,7 @@ public:
     virtual void Delete(const std::string &key) = 0;
 
     virtual void SetGeoPoint(const std::string &key, const GeoPoint &point) = 0;
-    virtual bool GetGeoPoint(const std::string &key, GeoPoint &point) = 0;
+    virtual bool GetGeoPoint(const std::string &key, const std::string &name, GeoPoint &point) = 0;
 };
 
 #endif // ICACHE_H

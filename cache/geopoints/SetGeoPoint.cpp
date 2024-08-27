@@ -19,20 +19,29 @@ void Cache::SetGeoPoint(const std::string &key, const GeoPoint &point)
     std::lock_guard<std::mutex> lock(mutex_);
 
     // Check if a point with the given key already exists in the cache
-    auto it = geo_items_.find(key);
-    if (it != geo_items_.end())
+    auto key_it = geo_items_.find(key);
+    if (key_it != geo_items_.end())
     {
-        // If the point exists, prepare to remove it from the R-tree
-        double min[2] = {it->second.longitude, it->second.latitude}; // Create the minimum bounding box
-        double max[2] = {it->second.longitude, it->second.latitude}; // Create the maximum bounding box
-        rtree_.Remove(min, max, key);                                // Remove the existing point from the R-tree
+        auto name_it = key_it->second.find(point.name);
+        if (name_it != key_it->second.end())
+        {
+            // If the point exists, prepare to remove it from the R-tree
+            double min[2] = {name_it->second.longitude, name_it->second.latitude}; // Create the minimum bounding box
+            double max[2] = {name_it->second.longitude, name_it->second.latitude}; // Create the maximum bounding box
+            rtree_.Remove(min, max, key + ":" + point.name);                       // Remove the existing point from the R-tree
+        }
+        else
+        {
+            // If the key does not exist, create a new map for it
+            geo_items_[key] = std::unordered_map<std::string, GeoPoint>();
+        }
     }
 
     // Prepare to insert the new point into the R-tree
     double min[2] = {point.longitude, point.latitude}; // Create the minimum bounding box for the new point
     double max[2] = {point.longitude, point.latitude}; // Create the maximum bounding box for the new point
     rtree_.Insert(min, max, key);                      // Insert the new point into the R-tree
-    geo_items_[key] = point;                           // Update the cache with the new point
+    geo_items_[key][point.name] = point;               // Update the cache with the new point
 
     // Log the operation for auditing and debugging purposes
     file_logger_->info("Set GeoPoint: " + key + " (Name: " + point.name +
