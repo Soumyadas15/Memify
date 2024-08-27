@@ -86,6 +86,30 @@ private:
     void HandleGet(const MESPObject &obj, std::string &response);
 
     /**
+     * @brief Handles the "GEOSET" command.
+     *
+     * Parses the arguments for the GEOSET command and stores the location key, name and its coordinates in the cache.
+     * Optionally accepts a duration for expiration.
+     *
+     * @param obj The parsed MESP object containing the GEOSET command and its arguments.
+     * @param response The response string to be populated based on the execution of the GEOSET command.
+     */
+    void HandleGeoSet(const MESPObject &obj, std::string &response);
+
+    /**
+     * @brief Handles the "GEOGET" command.
+     *
+     * Parses the arguments for the GEOGET command and finds the name and cordinates of a place by given key.
+     * Optionally accepts a duration for expiration.
+     *
+     * @param obj The parsed MESP object containing the GEOGET command and its arguments.
+     * @param response The response string to be populated based on the execution of the GEOGET command.
+     */
+    void HandleGeoGet(const MESPObject &obj, std::string &response);
+
+
+
+    /**
      * @brief Handles invalid commands.
      *
      * Sets the response to "INVALID COMMAND" if an unrecognized command is encountered.

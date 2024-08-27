@@ -9,6 +9,7 @@ enum class MESPType
     SimpleString, // Represents a simple string value
     Error,        // Represents an error message
     Integer,      // Represents an integer value
+    Float,        // Represents a float value
     BulkString,   // Represents a bulk string value
     Array         // Represents an array of MESP objects
 };
@@ -19,7 +20,32 @@ struct MESPObject
     MESPType type;                      // The type of the MESP object
     std::string stringValue;            // Holds the value for SimpleString, Error, or BulkString types
     long long intValue;                 // Holds the value for Integer type
+    float floatValue;                   // Holds the value for Float type
     std::vector<MESPObject> arrayValue; // Holds the value for Array type, which is a vector of MESPObjects
+
+    // Default constructor
+    MESPObject()
+        : type(MESPType::SimpleString), intValue(0), floatValue(0.0f) {}
+
+    // Constructor for SimpleString and Error types
+    MESPObject(MESPType t, const std::string &str)
+        : type(t), stringValue(str), intValue(0), floatValue(0.0f) {}
+
+    // Constructor for Integer type
+    MESPObject(MESPType t, long long i)
+        : type(t), intValue(i), floatValue(0.0f) {}
+
+    // Constructor for Float type
+    MESPObject(MESPType t, float f)
+        : type(t), floatValue(f) {}
+
+    // Constructor for Array type
+    MESPObject(MESPType t)
+        : type(t), intValue(0), floatValue(0.0f) {}
+
+    // Constructor for Array with elements
+    MESPObject(MESPType t, const std::vector<MESPObject> &arr)
+        : type(t), arrayValue(arr), intValue(0), floatValue(0.0f) {}
 };
 
 // Class responsible for parsing and serializing MESP objects
@@ -75,6 +101,14 @@ private:
     static MESPObject parseInteger(std::string &input);
 
     /**
+     * Parses an Float type from the input string.
+     *
+     * @param input A reference to the input string to be parsed.
+     * @return The parsed MESPObject of type Float.
+     */
+    static MESPObject parseFloat(std::string &input);
+
+    /**
      * Parses a BulkString type from the input string.
      *
      * @param input A reference to the input string to be parsed.
@@ -113,6 +147,14 @@ private:
      * @return A string representing the serialized Integer.
      */
     static std::string serializeInteger(long long num);
+
+    /**
+     * Serializes an Float type into a string.
+     *
+     * @param num The Float value to be serialized.
+     * @return A string representing the serialized Float.
+     */
+    static std::string serializeFloat(float num);
 
     /**
      * Serializes a BulkString type into a string.

@@ -34,6 +34,17 @@ std::string CommandParser::serializeInteger(long long num)
     return ":" + std::to_string(num) + "\r\n";
 }
 
+// Serializes an Float type into a string format.
+// The Float format starts with a ':' character followed by the Float value,
+// and ends with "\r\n" (carriage return and newline).
+//
+// @param num The Float value to be serialized.
+// @return A string in the MESP Float format.
+std::string CommandParser::serializeFloat(float num)
+{
+    return "#" + std::to_string(num) + "\r\n";
+}
+
 // Serializes a BulkString type into a string format.
 // The BulkString format starts with a '$' character followed by the length of the string,
 // and ends with "\r\n" (carriage return and newline). If the string is "nil", it represents a nil bulk string.

@@ -100,12 +100,23 @@ void MessageProcessor::HandleCommand(const MESPObject &obj, std::string &respons
         {
             HandleGet(obj, response);
         }
+        else if (command == "GEOSET")
+        {
+            HandleGeoSet(obj, response);
+        }
+        else if (command == "GEOGET")
+        {
+            HandleGeoGet(obj, response);
+        }
+        else if (command == "GEODISTANCE")
+        {
+            // TODO: Implement a feature to retrieve a list of coordinates within a given radius (km)
+        }
         else
         {
             HandleInvalidCommand(response);
         }
     }
-    // Handle cases where the object type is not recognized
     else
     {
         HandleInvalidRespType(response);

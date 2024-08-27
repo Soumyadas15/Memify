@@ -9,6 +9,7 @@
 #include "GeoPoint.h"
 #include "LoggerManager.h"
 #include "FileLogger.h"
+#include "RTree.h"
 
 /**
  * @class Cache
@@ -78,8 +79,14 @@ public:
      */
     void Delete(const std::string &key) override;
 
+
+
+
     void SetGeoPoint(const std::string &key, const GeoPoint &point) override;
     bool GetGeoPoint(const std::string &key, GeoPoint &point) override;
+
+
+    
 
 private:
     /**
@@ -98,6 +105,9 @@ private:
     std::list<std::string> usage_order_; ///< A list to keep track of the usage order of keys, implementing LRU eviction.
     std::mutex mutex_; ///< A mutex to ensure thread-safe operations on the cache.
     std::shared_ptr<FileLogger> file_logger_; ///< A file logger to log activities.
+
+    typedef RTree<std::string, double, 2, double> RTreeType;
+    RTreeType rtree_;
 
     /**
      * @brief Cleans up expired cache entries.

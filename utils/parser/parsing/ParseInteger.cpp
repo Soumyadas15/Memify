@@ -20,7 +20,8 @@ MESPObject CommandParser::parseInteger(std::string &input)
     }
 
     // Extract the integer value from the substring between ':' and "\r\n"
-    MESPObject obj{MESPType::Integer, "", std::stoll(input.substr(1, end - 1))};
+    long long intValue = std::stoll(input.substr(1, end - 1));
+    MESPObject obj{MESPType::Integer, intValue}; // Use the constructor for Integer type
     input.erase(0, end + 2); // Remove the parsed integer from the input
 
     return obj; // Return the populated MESPObject

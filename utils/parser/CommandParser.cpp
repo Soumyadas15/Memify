@@ -31,6 +31,9 @@ MESPObject CommandParser::parse(std::string &input)
     case ':':
         parsedObj = parseInteger(input);
         break;
+    case '#':
+        parsedObj = parseFloat(input);
+        break;
     case '$':
         parsedObj = parseBulkString(input);
         break;

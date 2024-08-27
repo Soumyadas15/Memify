@@ -9,6 +9,8 @@ include_directories(
     ${PROJECT_SOURCE_DIR}/server
 
     ${PROJECT_SOURCE_DIR}/cache
+    ${PROJECT_SOURCE_DIR}/cache/r-tree
+
     ${PROJECT_SOURCE_DIR}/cache/geopoints
 
     ${PROJECT_SOURCE_DIR}/core
@@ -57,25 +59,23 @@ add_executable(Memify
     config/ini.cpp
     security/HMACUtil.cpp
 
-
-    
-
     connection/ConnectionHandler.cpp
     connection/HandleClient.cpp
     connection/ProcessMessage.cpp
     connection/SendResponse.cpp
     connection/VerifySignature.cpp
+
     connection/message/MessageProcessor.cpp
     connection/message/handlers/HandleErrors.cpp
-
+    connection/message/handlers/HandleErrors.cpp
     connection/message/handlers/HandleGet.cpp
     connection/message/handlers/HandleSet.cpp
     connection/message/handlers/HandlePing.cpp
+    connection/message/handlers/geolocation/HandleGeoSet.cpp
+    connection/message/handlers/geolocation/HandleGeoGet.cpp
+    connection/message/handlers/geolocation/HandleGeoRadius.cpp
 
     connection/response/ResponseSender.cpp
-
-
-
 
     utils/logs/file/FileLogger.cpp
     utils/logs/console/ConsoleLogger.cpp
@@ -88,6 +88,7 @@ add_executable(Memify
     utils/parser/parsing/ParseBulkString.cpp
     utils/parser/parsing/ParsseArray.cpp
     utils/parser/parsing/ParseInteger.cpp
+    utils/parser/parsing/ParseFloat.cpp
 )
 
 target_link_libraries(Memify pthread ${OPENSSL_LIBRARIES})
