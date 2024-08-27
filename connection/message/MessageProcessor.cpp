@@ -1,6 +1,9 @@
 #include "MessageProcessor.h"
 #include <iostream>
 #include <ICache.h>
+#include "GeoPoint.h"
+
+#include "CommandParser.h"
 
 /**
  * @brief Constructs a MessageProcessor object with a given cache.
@@ -23,105 +26,88 @@ MessageProcessor::MessageProcessor(std::shared_ptr<ICache> cache) : cache_(std::
  */
 void MessageProcessor::HandleMessage(const std::string &message, std::string &response)
 {
-    std::istringstream iss(message); // Create a string stream to parse the message
-    std::string command;
-    iss >> command; // Extract the first word as the command
+    try
+    {
+        std::string input = message; // Create a copy of the input message
+        CommandParser parser;
+        MESPObject MESPObject = parser.parse(input); // Parse the message
 
-    // Pass the command and the rest of the message to the command handler
-    HandleCommand(command, iss, response);
+        
+        // Handle the parsed RESP object
+        HandleCommand(MESPObject, response);
+    }
+    catch (const std::exception &e)
+    {
+        // Handle parsing or processing errors
+        response = "ERROR: " + std::string(e.what());
+    }
 }
 
 /**
- * @brief Processes a specific command extracted from the input message.
+ * @brief Handles a parsed MESP command object and generates an appropriate response.
  *
- * This method is responsible for handling specific commands, such as PING, SET, GET, and DELETE.
- * It parses the command arguments using the provided string stream and interacts with the cache as needed.
+ * This method processes a parsed MESP object based on its type and content. It identifies the command and
+ * delegates to specific handlers based on the command type. If the command or format is invalid, it generates
+ * an error response. It supports basic commands like "SET" and "GET" and checks for the validity of command format.
  *
- * @param command The command string extracted from the message.
- * @param iss A string stream containing the remainder of the message for further parsing.
- * @param response The response string that will be populated based on the command's execution.
+ * @param obj A constant reference to the parsed MESPObject representing the command to be handled.
+ * @param response A reference to the output string that will be populated with the response message.
+ *
+ * The method performs the following:
+ * - **SimpleString Handling**: If the object is a SimpleString, it treats it as a "PING" command and invokes `HandlePing`.
+ * - **Array Handling**: If the object is an Array, it checks if it is non-empty and processes the command based on the first element:
+ *   - **Command Validation**: Checks if the first element of the array is a BulkString representing the command (e.g., "SET", "GET").
+ *   - **Command Execution**:
+ *     - **"SET" Command**: Delegates to `HandleSet` for handling the "SET" command.
+ *     - **"GET" Command**: Delegates to `HandleGet` for handling the "GET" command.
+ *     - **Invalid Commands**: Calls `HandleInvalidCommand` for unknown commands or invalid formats.
+ * - **Error Handling**: If the object type is not recognized or the format is invalid, it calls `HandleInvalidRespType` to generate an error response.
  */
-void MessageProcessor::HandleCommand(const std::string &command, std::istringstream &iss, std::string &response)
+void MessageProcessor::HandleCommand(const MESPObject &obj, std::string &response)
 {
-    if (command == "PING")
+    // Handle SimpleString type
+    if (obj.type == MESPType::SimpleString)
     {
-        // Handle PING command: Respond with "PONG"
-        try
-        {
-            response = "PONG";
-        }
-        catch (const std::exception &e)
-        {
-            // If an error occurs, respond with "PONG FAILED"
-            response = "PONG FAILED";
-            std::cerr << "Pong failed" << std::endl;
-        }
+        HandlePing(response);
     }
-    else if (command == "SET")
+    // Handle Array type
+    else if (obj.type == MESPType::Array)
     {
-        // Handle SET command: Expect a key, value, and optional duration
-        std::string key;
-        iss >> key; // Extract the key
-
-        std::string value;
-        std::getline(iss >> std::ws, value); // Extract the value, considering whitespace
-
-        // Attempt to find a duration parameter at the end of the value string
-        size_t last_space = value.find_last_of(' ');
-        if (last_space != std::string::npos)
+        // Check if the array is empty
+        if (obj.arrayValue.empty())
         {
-            // Extract duration from the end of the value string
-            std::string duration_str = value.substr(last_space + 1);
-            value = value.substr(0, last_space);
+            HandleInvalidCommand(response);
+            return;
+        }
 
-            try
-            {
-                int duration = std::stoi(duration_str);                  // Convert duration string to integer
-                cache_->Set(key, value, std::chrono::seconds(duration)); // Store in cache
-                response = "OK";
-            }
-            catch (const std::exception &e)
-            {
-                // Respond with an error message if the duration is invalid
-                response = "INVALID DURATION";
-                std::cerr << "Invalid duration in SET command: " << duration_str << std::endl;
-            }
+        // Process the first element of the array as the command
+        const MESPObject &commandObj = obj.arrayValue[0];
+
+        // Ensure the first element is a BulkString
+        if (commandObj.type != MESPType::BulkString)
+        {
+            HandleInvalidCommandFormat(response);
+            return;
+        }
+
+        // Get the command string and delegate to appropriate handler
+        std::string command = commandObj.stringValue;
+        if (command == "SET")
+        {
+            HandleSet(obj, response);
+        }
+        else if (command == "GET")
+        {
+            HandleGet(obj, response);
         }
         else
         {
-            // Respond with an error if the command format is incorrect
-            response = "INVALID COMMAND FORMAT";
-            std::cerr << "Invalid SET command format: " << value << std::endl;
+            HandleInvalidCommand(response);
         }
     }
-    else if (command == "GET")
-    {
-        // Handle GET command: Expect a key to retrieve its value
-        std::string key;
-        iss >> key;
-
-        std::string value;
-        if (cache_->Get(key, value))
-        {
-            response = value; // Return the value if found in cache
-        }
-        else
-        {
-            response = "NOT FOUND"; // Return "NOT FOUND" if key does not exist in cache
-        }
-    }
-    else if (command == "DELETE")
-    {
-        // Handle DELETE command: Expect a key to delete from cache
-        std::string key;
-        iss >> key;
-
-        cache_->Delete(key); // Delete the key-value pair from cache
-        response = "OK";     // Acknowledge successful deletion
-    }
+    // Handle cases where the object type is not recognized
     else
     {
-        // Handle any unrecognized command
-        response = "INVALID COMMAND";
+        HandleInvalidRespType(response);
     }
 }

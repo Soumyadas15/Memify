@@ -4,6 +4,8 @@
 #include <string>
 #include <chrono>
 
+#include "GeoPoint.h"
+
 /**
  * @class ICache
  * @brief The interface for a Memify cache.
@@ -63,6 +65,9 @@ public:
      * @param key A string representing the key of the key-value pair to delete from the cache.
      */
     virtual void Delete(const std::string &key) = 0;
+
+    virtual void SetGeoPoint(const std::string &key, const GeoPoint &point) = 0;
+    virtual bool GetGeoPoint(const std::string &key, GeoPoint &point) = 0;
 };
 
 #endif // ICACHE_H
