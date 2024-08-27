@@ -22,14 +22,23 @@ include_directories(
 
     ${PROJECT_SOURCE_DIR}/security
     ${PROJECT_SOURCE_DIR}/connection
-    
+    ${PROJECT_SOURCE_DIR}/connection/message
+    ${PROJECT_SOURCE_DIR}/connection/response
+
     ${OPENSSL_INCLUDE_DIR}
 )
 
 add_executable(Memify
     src/main.cpp
     server/Server.cpp
+
     cache/Cache.cpp
+    cache/CacheSet.cpp
+    cache/CacheGet.cpp
+    cache/CacheDelete.cpp
+    cache/CacheCleanup.cpp
+    cache/CacheMoveToFront.cpp
+    cache/CacheEvict.cpp
 
     persistence/snapshot/Snapshot.cpp
     persistence/AOF/AOF.cpp
@@ -38,9 +47,13 @@ add_executable(Memify
     config/ini.cpp
     security/HMACUtil.cpp
 
-    connection/Connectionhandler.cpp
-    connection/MessageProcessor.cpp
-    connection/ResponseSender.cpp
+    connection/ConnectionHandler.cpp
+    connection/HandleClient.cpp
+    connection/ProcessMessage.cpp
+    connection/SendResponse.cpp
+    connection/VerifySignature.cpp
+    connection/message/MessageProcessor.cpp
+    connection/response/ResponseSender.cpp
 
     utils/logs/file/FileLogger.cpp
     utils/logs/console/ConsoleLogger.cpp

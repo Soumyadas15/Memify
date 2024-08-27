@@ -1,123 +1,62 @@
-#include "Cache.h"
-#include <thread>
-#include <chrono>
 #include <iostream>
+#include <thread>
+#include <sstream>
 
+#include "Cache.h"
+#include "LoggerManager.h"
+#include "FileLogger.h"
 
+/**
+ * @brief Constructs a Cache object with a specified maximum size.
+ *
+ * Initializes the LRU (Least Recently Used) cache with a maximum capacity defined by `max_size`. The constructor also
+ * sets up logging using `FileLogger` and starts a background thread responsible for periodically cleaning up expired
+ * cache items. The background cleanup thread runs indefinitely to ensure that the cache remains free of stale data
+ * and operates efficiently.
+ *
+ * The cache maintains a limit on the number of items it can store. When the cache reaches this limit, it automatically
+ * evicts the least recently used items to make room for new entries. This behavior ensures that the cache always contains
+ * the most recently accessed data, providing efficient access and memory usage.
+ *
+ * @param max_size The maximum number of items that the cache can hold. Once this limit is reached, the cache will
+ *                 evict the least recently used items to accommodate new entries. The `max_size` should be set according
+ *                 to the application's requirements to balance between memory usage and cache performance.
+ */
 Cache::Cache(size_t max_size) : max_size_(max_size)
 {
+    // Initialize the file logger with a unique log file name based on the current thread ID
+    std::ostringstream oss;
+    oss << "cache_" << std::this_thread::get_id() << ".log";
+
+    file_logger_ = std::make_shared<FileLogger>(oss.str());
+    file_logger_->setLogLevel(ILogger::LogLevel::DEBUG);
+
+    // Register the file logger with the LoggerManager to handle logging
+    LoggerManager::getInstance().addLogger(file_logger_);
+
+    // Log the cache initialization message
+    file_logger_->info("LRU Cache initialized with max size: " + std::to_string(max_size_));
     std::cout << "LRU Cache initialized with max size: " << max_size_ << std::endl;
+
+    // Start the background thread for cache cleanup
+    // This thread will periodically remove expired cache items to ensure the cache remains efficient
     std::thread(&Cache::Cleanup, this).detach();
 }
 
+/**
+ * @brief Destroys the Cache object and cleans up resources.
+ *
+ * The destructor logs a message indicating the destruction of the cache. While the destructor does not explicitly stop
+ * the background cleanup thread, it ensures that the cache's lifecycle is properly logged. The cleanup thread will
+ * continue to run until the application terminates, and it will handle the removal of expired items from the cache.
+ *
+ * @note The background cleanup thread runs indefinitely. It is essential to manage the thread's lifecycle carefully to
+ *       avoid resource leaks or undefined behavior. Proper application shutdown procedures should ensure that all threads
+ *       are joined or otherwise handled before the application exits.
+ */
 Cache::~Cache()
 {
+    // Log the destruction of the cache
+    file_logger_->info("Cache destroyed");
     std::cout << "Cache destroyed" << std::endl;
-}
-
-void Cache::Set(const std::string &key, const std::string &value, std::chrono::seconds duration)
-{
-    std::lock_guard<std::mutex> lock(mutex_);
-    auto it = items_.find(key);
-
-    if (it != items_.end())
-    {
-        it->second.first.value = value;
-        it->second.first.expiration = std::chrono::steady_clock::now() + duration;
-        MoveToFront(key);
-    }
-    else
-    {
-        CacheItem item;
-        item.value = value;
-        item.expiration = std::chrono::steady_clock::now() + duration;
-        if (items_.size() >= max_size_)
-        {
-            Evict();
-        }
-        auto list_it = usage_order_.insert(usage_order_.begin(), key);
-        items_[key] = {item, list_it};
-        std::cout << "Key '" << key << "' is SET" << std::endl;
-    }
-}
-
-bool Cache::Get(const std::string &key, std::string &value)
-{
-    std::lock_guard<std::mutex> lock(mutex_);
-    auto it = items_.find(key);
-    if (it != items_.end())
-    {
-        if (it->second.first.expiration > std::chrono::steady_clock::now())
-        {
-            value = it->second.first.value;
-            MoveToFront(key);
-            std::cout << "GET key: '" << key << "' found" << std::endl;
-            return true;
-        }
-        else
-        {
-            items_.erase(it);
-        }
-    }
-    return false;
-}
-
-void Cache::Delete(const std::string &key)
-{
-    std::lock_guard<std::mutex> lock(mutex_);
-    auto it = items_.find(key);
-    if (it != items_.end())
-    {
-        usage_order_.erase(it->second.second);
-        items_.erase(it);
-        std::cout << "Delete key: '" << key << "', succeeded" << std::endl;
-    }
-    else
-    {
-        std::cout << "Delete key: '" << key << "', failed" << std::endl;
-    }
-}
-
-void Cache::Cleanup()
-{
-    while (true)
-    {
-        std::this_thread::sleep_for(std::chrono::minutes(1));
-        std::lock_guard<std::mutex> lock(mutex_);
-        auto now = std::chrono::steady_clock::now();
-        for (auto it = items_.begin(); it != items_.end();)
-        {
-            if (it->second.first.expiration <= now)
-            {
-                usage_order_.erase(it->second.second);
-                it = items_.erase(it);
-                std::cout << "Expired item removed" << std::endl;
-            }
-            else
-            {
-                ++it;
-            }
-        }
-    }
-}
-
-void Cache::MoveToFront(const std::string &key)
-{
-    auto it = items_.find(key);
-    if (it != items_.end())
-    {
-        usage_order_.erase(it->second.second);
-        it->second.second = usage_order_.insert(usage_order_.begin(), key);
-    }
-}
-
-void Cache::Evict()
-{
-    if (!usage_order_.empty())
-    {
-        auto lru_key = usage_order_.back();
-        usage_order_.pop_back();
-        items_.erase(lru_key);
-        std::cout << "Evicted least recently used item: '" << lru_key << "'" << std::endl;
-    }
 }
