@@ -1,6 +1,9 @@
-#include "Cache.h"
 #include "Server.h"
 #include <memory>
+
+#include "Cache.h"
+#include "GeoCache.h"
+#include "TimeSeriesCache.h"
 
 /**
  * @brief The entry point of the application.
@@ -16,10 +19,12 @@ int main()
     // Initialize a shared pointer to the Cache object.
     // This cache will be shared across multiple client connections to store and retrieve data efficiently.
     auto cache = std::make_shared<Cache>();
+    auto geo_cache = std::make_shared<GeoCache>();
+    auto time_series_cache = std::make_shared<TimeSeriesCache>();
 
     // Create a Server object, passing the shared cache and specifying the port number.
     // The server is set to listen on port 8080 by default.
-    Server server(cache, 8080);
+    Server server(cache, geo_cache, time_series_cache, 8080);
 
     // Start the server to begin listening for incoming connections.
     // This method will block the main thread as it runs the server loop to handle clients.

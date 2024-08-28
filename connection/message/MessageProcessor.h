@@ -4,8 +4,12 @@
 #include <memory>
 #include <string>
 #include <sstream>
-#include <ICache.h>
 #include <optional>
+
+#include <ICache.h>
+#include <IGeoCache.h>
+#include <ITimeSeriesCache.h>
+
 #include "CommandParser.h"
 
 /**
@@ -27,7 +31,10 @@ public:
      *
      * @param cache A shared pointer to an ICache object used for caching purposes.
      */
-    explicit MessageProcessor(std::shared_ptr<ICache> cache);
+    explicit MessageProcessor(
+        std::shared_ptr<ICache> cache,
+        std::shared_ptr<IGeoCache> geo_cache,
+        std::shared_ptr<ITimeSeriesCache> time_series_cache);
 
     /**
      * @brief Processes an incoming message and generates a response.
@@ -42,6 +49,8 @@ public:
 
 private:
     std::shared_ptr<ICache> cache_; /**< Shared pointer to an ICache object for managing cached data. */
+    std::shared_ptr<IGeoCache> geo_cache_; /**< Shared pointer to an IGeoCache object for managing cached data. */
+    std::shared_ptr<ITimeSeriesCache> time_series_cache_; /**< Shared pointer to an IGeoCache object for managing cached data. */
 
     /**
      * @brief Processes the parsed RESP object and handles the specific command.

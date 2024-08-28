@@ -4,6 +4,7 @@
 #include <cstring>
 #include <thread>
 
+
 #include "Server.h"
 #include "ConnectionHandler.h"
 #include "INIReader.h"
@@ -19,8 +20,17 @@
  * @param cache Shared pointer to an ICache object for caching functionalities.
  * @param port Port number on which the server listens.
  */
-Server::Server(std::shared_ptr<ICache> cache, uint16_t port)
-    : cache_(std::move(cache)), port_(port), secret_key_("xyz"), running_(false)
+Server::Server(std::shared_ptr<ICache> cache,
+               std::shared_ptr<IGeoCache> geo_cache,
+               std::shared_ptr<ITimeSeriesCache> time_series_cache,
+               uint16_t port
+)
+    : cache_(std::move(cache)),
+      geo_cache_(std::move(geo_cache)),
+      time_series_cache_(std::move(time_series_cache)),
+      port_(port),
+      secret_key_("xyz"),
+      running_(false)
 {
     // Create an INIReader to read the configuration file.
     INIReader reader("../config.ini");
@@ -106,7 +116,7 @@ void Server::Start()
         std::cout << "Client connected" << std::endl;
 
         // Create a new thread to handle the client using ConnectionHandler.
-        std::thread(&ConnectionHandler::HandleClient, ConnectionHandler(cache_, client_fd, secret_key_)).detach();
+        std::thread(&ConnectionHandler::HandleClient, ConnectionHandler(cache_, geo_cache_, time_series_cache_, client_fd, secret_key_)).detach();
     }
 
     // Close the server socket once the server stops.

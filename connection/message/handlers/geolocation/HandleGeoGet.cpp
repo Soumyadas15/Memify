@@ -23,12 +23,13 @@ void MessageProcessor::HandleGeoGet(const MESPObject &obj, std::string &response
         std::string name;
         float latitude;
         float longitude;
-        GeoPoint geoPoint(name, latitude, longitude);
+        float elevation;
+        GeoPoint geoPoint(name, latitude, longitude, elevation);
 
-        // Retrieve the value associated with the key from the cache
-        if (cache_->GetGeoPoint(key, nameKey, geoPoint))
+        // Retrieve the value associated with the key from the gep cache
+        if (geo_cache_ ->GetGeoPoint(key, nameKey, geoPoint))
         {
-            std::cout << std::to_string(geoPoint.latitude) << std::endl;
+            std::cout << std::to_string(geoPoint.elevation) << std::endl;
             // Set the response to the retrieved value
             response = "Name: " + geoPoint.name +
                        ", Latitude: " + std::to_string(geoPoint.latitude) +

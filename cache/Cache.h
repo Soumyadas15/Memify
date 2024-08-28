@@ -79,12 +79,6 @@ public:
      */
     void Delete(const std::string &key) override;
 
-
-
-
-    void SetGeoPoint(const std::string &key, const GeoPoint &point) override;
-    bool GetGeoPoint(const std::string &key, const std::string &name, GeoPoint &point) override;
-
 private:
     /**
      * @struct CacheItem
@@ -98,13 +92,9 @@ private:
 
     size_t max_size_;  ///< The maximum number of entries the cache can hold.
     std::unordered_map<std::string, std::pair<CacheItem, std::list<std::string>::iterator>> items_; ///< A hash map to store cache items and iterators to their positions in the usage order list.
-    std::unordered_map<std::string, std::unordered_map<std::string, GeoPoint>> geo_items_;
     std::list<std::string> usage_order_; ///< A list to keep track of the usage order of keys, implementing LRU eviction.
     std::mutex mutex_; ///< A mutex to ensure thread-safe operations on the cache.
     std::shared_ptr<FileLogger> file_logger_; ///< A file logger to log activities.
-
-    typedef RTree<std::string, double, 2, double> RTreeType;
-    RTreeType rtree_;
 
     /**
      * @brief Cleans up expired cache entries.

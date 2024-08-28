@@ -1,8 +1,11 @@
 #include "MessageProcessor.h"
 #include <iostream>
-#include <ICache.h>
-#include "GeoPoint.h"
 
+#include <ICache.h>
+#include <IGeoCache.h>
+#include <ITimeSeriesCache.h>
+
+#include "GeoPoint.h"
 #include "CommandParser.h"
 
 /**
@@ -13,7 +16,13 @@
  *
  * @param cache A shared pointer to an ICache object used for caching data.
  */
-MessageProcessor::MessageProcessor(std::shared_ptr<ICache> cache) : cache_(std::move(cache)) {}
+MessageProcessor::MessageProcessor(
+    std::shared_ptr<ICache> cache,
+    std::shared_ptr<IGeoCache> geo_cache,
+    std::shared_ptr<ITimeSeriesCache> time_series_cache
+) : cache_(std::move(cache)),
+    geo_cache_(std::move(geo_cache)),
+    time_series_cache_(std::move(time_series_cache)) {}
 
 /**
  * @brief Handles an incoming message and generates an appropriate response.

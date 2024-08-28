@@ -1,4 +1,4 @@
-#include "Cache.h"
+#include "GeoCache.h"
 
 /**
  * @brief Inserts or updates a geographic point in the cache and the R-tree index.
@@ -13,7 +13,7 @@
  *            the point in the cache.
  * @param point A GeoPoint object containing the name, latitude, and longitude of the point.
  */
-void Cache::SetGeoPoint(const std::string &key, const GeoPoint &point)
+void GeoCache::SetGeoPoint(const std::string &key, const GeoPoint &point)
 {
     // Lock the mutex to ensure thread-safe access to the cache and R-tree
     std::lock_guard<std::mutex> lock(mutex_);
@@ -25,26 +25,26 @@ void Cache::SetGeoPoint(const std::string &key, const GeoPoint &point)
         auto name_it = key_it->second.find(point.name);
         if (name_it != key_it->second.end())
         {
-            // If the point exists, prepare to remove it from the R-tree
-            double min[2] = {name_it->second.longitude, name_it->second.latitude}; // Create the minimum bounding box
-            double max[2] = {name_it->second.longitude, name_it->second.latitude}; // Create the maximum bounding box
-            rtree_.Remove(min, max, key + ":" + point.name);                       // Remove the existing point from the R-tree
-        }
-        else
-        {
-            // If the key does not exist, create a new map for it
-            geo_items_[key] = std::unordered_map<std::string, GeoPoint>();
+            // Prepare to remove the existing point from the R-tree
+            double min[3] = {name_it->second.longitude, name_it->second.latitude, name_it->second.elevation};
+            double max[3] = {name_it->second.longitude, name_it->second.latitude, name_it->second.elevation};
+            rtree_.Remove(min, max, key + ":" + point.name);
         }
     }
+    else
+    {
+        geo_items_[key] = std::unordered_map<std::string, GeoPoint>();
+    }
 
-    // Prepare to insert the new point into the R-tree
-    double min[2] = {point.longitude, point.latitude}; // Create the minimum bounding box for the new point
-    double max[2] = {point.longitude, point.latitude}; // Create the maximum bounding box for the new point
-    rtree_.Insert(min, max, key);                      // Insert the new point into the R-tree
-    geo_items_[key][point.name] = point;               // Update the cache with the new point
+    // Prepare to insert the new point into the R-tree with elevation
+    double min[3] = {point.longitude, point.latitude, point.elevation};
+    double max[3] = {point.longitude, point.latitude, point.elevation};
+    rtree_.Insert(min, max, key + ":" + point.name); // Use 3D bounding box for the new point
+    geo_items_[key][point.name] = point;             // Update the cache with the new point
 
-    // Log the operation for auditing and debugging purposes
+    // Log the operation
     file_logger_->info("Set GeoPoint: " + key + " (Name: " + point.name +
                        ", Latitude: " + std::to_string(point.latitude) +
-                       ", Longitude: " + std::to_string(point.longitude) + ")");
+                       ", Longitude: " + std::to_string(point.longitude) +
+                       ", Elevation: " + std::to_string(point.elevation) + ")");
 }

@@ -12,7 +12,10 @@
 #include "HMACUtil.h"
 #include "LoggerManager.h"
 #include "FileLogger.h"
+
 #include "ICache.h"
+#include "IGeoCache.h"
+#include "ITimeSeriesCache.h"
 
 /**
  * @class ConnectionHandler
@@ -20,8 +23,17 @@
  *
  * The `ConnectionHandler` class is responsible for managing a network connection with a client. It handles receiving data from the client, processing messages, verifying message signatures for security, and sending responses back to the client. The class also provides detailed logging for debugging and monitoring purposes.
  */
-ConnectionHandler::ConnectionHandler(std::shared_ptr<ICache> cache,int client_fd, const std::string &secret_key)
-    : cache_(std::move(cache)), client_fd_(client_fd), secret_key_(secret_key)
+ConnectionHandler::ConnectionHandler(
+    std::shared_ptr<ICache> cache,
+    std::shared_ptr<IGeoCache> geo_cache,
+    std::shared_ptr<ITimeSeriesCache> time_series_cache,
+    int client_fd,
+    const std::string &secret_key)
+    : cache_(std::move(cache)),
+      geo_cache_(std::move(geo_cache)),
+      time_series_cache_(std::move(time_series_cache)),
+      client_fd_(client_fd),
+      secret_key_(secret_key)
 {
     // Create a log file name specific to this connection using the client file descriptor.
     std::ostringstream oss;

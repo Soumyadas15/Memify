@@ -8,7 +8,8 @@
 
 #include "FileLogger.h"
 #include "ICache.h"
-
+#include "IGeoCache.h"
+#include "ITimeSeriesCache.h"
 
 /**
  * @class ConnectionHandler
@@ -19,16 +20,14 @@
 class ConnectionHandler
 {
 public:
-    /**
-     * @brief Constructs a `ConnectionHandler` instance.
-     *
-     * Initializes the `ConnectionHandler` with the provided parameters, including a cache for message processing, a file descriptor for the client connection, and a secret key for message signature verification. It also sets up a file logger for logging connection-related activities.
-     *
-     * @param cache A shared pointer to an `ICache` instance used for caching data during message processing.
-     * @param client_fd The file descriptor associated with the client connection.
-     * @param secret_key A string containing the secret key used for verifying message signatures.
-     */
-    ConnectionHandler(std::shared_ptr<ICache> cache, int client_fd, const std::string &secret_key);
+    
+    ConnectionHandler(
+            std::shared_ptr<ICache> cache, 
+            std::shared_ptr<IGeoCache> geo_cache, 
+            std::shared_ptr<ITimeSeriesCache> time_series_cache, 
+            int client_fd, 
+            const std::string &secret_key
+    );
 
     /**
      * @brief Handles the communication with the connected client.
@@ -39,6 +38,8 @@ public:
 
 private:
     std::shared_ptr<ICache> cache_;           ///< A shared pointer to an `ICache` instance used for caching data.
+    std::shared_ptr<IGeoCache> geo_cache_;           ///< A shared pointer to an `ICache` instance used for caching data.
+    std::shared_ptr<ITimeSeriesCache> time_series_cache_; ///< A shared pointer to an `ICache` instance used for caching data.
     int client_fd_;                           ///< The file descriptor for the client connection.
     std::string secret_key_;                  ///< The secret key used for verifying message signatures.
     std::shared_ptr<FileLogger> file_logger_; ///< A shared pointer to a `FileLogger` instance for logging connection activities.

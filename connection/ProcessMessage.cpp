@@ -25,7 +25,7 @@
 void ConnectionHandler::ProcessMessage(const std::string &message, std::string &response)
 {
     // Create a MessageProcessor instance to handle the message.
-    MessageProcessor processor(cache_);
+    MessageProcessor processor(cache_, geo_cache_, time_series_cache_);
     // Process the message and generate the response.
     processor.HandleMessage(message, response);
 }

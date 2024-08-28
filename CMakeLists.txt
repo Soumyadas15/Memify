@@ -10,6 +10,7 @@ include_directories(
 
     ${PROJECT_SOURCE_DIR}/cache
     ${PROJECT_SOURCE_DIR}/cache/r-tree
+    ${PROJECT_SOURCE_DIR}/cache/time-series
 
     ${PROJECT_SOURCE_DIR}/cache/geopoints
 
@@ -49,8 +50,12 @@ add_executable(Memify
     cache/CacheMoveToFront.cpp
     cache/CacheEvict.cpp
 
+    cache/geopoints/GeoCache.cpp
+    cache/geopoints/Evict.cpp
     cache/geopoints/SetGeoPoint.cpp
     cache/geopoints/GetGeoPoint.cpp
+
+    cache/time-series/TimeSeriesCache.cpp
 
     persistence/snapshot/Snapshot.cpp
     persistence/AOF/AOF.cpp

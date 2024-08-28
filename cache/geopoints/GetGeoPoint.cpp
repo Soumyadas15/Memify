@@ -1,4 +1,4 @@
-#include "Cache.h"
+#include "GeoCache.h"
 
 // The GetGeoPoint function tries to find a GeoPoint object associated with the given key in the cache.
 // If both the outer key and the inner key (name of the GeoPoint) exist, it returns true and outputs
@@ -19,7 +19,7 @@
 //   This ensures that the access to the cache is thread-safe, preventing data races and ensuring
 //   consistent behavior in a multi-threaded environment.
 
-bool Cache::GetGeoPoint(const std::string &key, const std::string &name, GeoPoint &point)
+bool GeoCache::GetGeoPoint(const std::string &key, const std::string &name, GeoPoint &point)
 {
     // Acquire a lock to ensure thread safety when accessing the shared resource 'geo_items_'.
     std::lock_guard<std::mutex> lock(mutex_);
@@ -40,7 +40,9 @@ bool Cache::GetGeoPoint(const std::string &key, const std::string &name, GeoPoin
             point = inner_it->second;
             file_logger_->info("Found GeoPoint: " + key + " (Name: " + name +
                                ", Latitude: " + std::to_string(point.latitude) +
-                               ", Longitude: " + std::to_string(point.longitude) + ")");
+                               ", Longitude: " + std::to_string(point.longitude) +
+                               ", Longitude: " + std::to_string(point.elevation) +
+                               ")");
             return true; // Indicate that the GeoPoint object was found.
         }
     }

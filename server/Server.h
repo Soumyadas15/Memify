@@ -2,6 +2,9 @@
 #define SERVER_H
 
 #include "ICache.h"
+#include "IGeoCache.h"
+#include "ITimeSeriesCache.h"
+
 #include <cstdint>
 #include <memory>
 #include <string>
@@ -26,7 +29,11 @@ public:
      * @param cache A shared pointer to an `ICache` object, providing the caching mechanism.
      * @param port The port number on which the server will listen for incoming connections.
      */
-    Server(std::shared_ptr<ICache> cache, uint16_t port);
+    Server(
+        std::shared_ptr<ICache> cache,
+        std::shared_ptr<IGeoCache> geo_cache,
+        std::shared_ptr<ITimeSeriesCache> time_series_cache,
+        uint16_t port);
 
     /**
      * @brief Starts the server, allowing it to accept and handle client connections.
@@ -46,6 +53,8 @@ public:
 
 private:
     std::shared_ptr<ICache> cache_; ///< Shared pointer to a cache object for storing and retrieving data.
+    std::shared_ptr<IGeoCache> geo_cache_; ///< Shared pointer to a cache object for storing and retrieving data.
+    std::shared_ptr<ITimeSeriesCache> time_series_cache_; ///< Shared pointer to a cache object for storing and retrieving data.
     uint16_t port_;                 ///< The port number on which the server listens for connections.
     std::string secret_key_;        ///< A secret key used for security purposes, such as HMAC validation.
     std::atomic<bool> running_;     ///< Atomic boolean flag to indicate the running state of the server.
