@@ -2,7 +2,7 @@
 
   
 
-Memify is a lightweight, high-performance in-memory data store implemented in C++. Inspired by Redis, Memify provides efficient key-value storage with additional features like HMAC signature verification for secure communications. This project was built from the ground up, including features such as chunk-based processing for large data handling and an LRU (Least Recently Used) caching mechanism.
+Memify is a lightweight, high-performance in-memory data store implemented in C++. Inspired by Redis, Memify provides efficient key-value storage with additional features like HMAC signature verification for secure communications. This project was built from the ground up, including features such as chunk-based processing for large data handling and an LRU (Least Recently Used) caching mechanism. The idea is to add more accurate geo-spatial and time series functions.
 
   
 
