@@ -56,8 +56,6 @@ void Cache::Cleanup()
         auto now = std::chrono::steady_clock::now();
 
         // Log the start of the cleanup process
-        file_logger_->info("Starting cleanup process");
-        std::cout << "Starting cleanup process" << std::endl;
 
         // Iterate over the cache items
         for (auto it = items_.begin(); it != items_.end();)
@@ -78,9 +76,5 @@ void Cache::Cleanup()
                 ++it; // Move to the next item if the current one is not expired
             }
         }
-
-        // Log the end of the cleanup process
-        file_logger_->info("Cleanup process completed");
-        std::cout << "Cleanup process completed" << std::endl;
     }
 }

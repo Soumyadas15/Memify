@@ -69,6 +69,20 @@ private:
      * @param client_fd The file descriptor for the client's socket connection.
      */
     void HandleClient(int client_fd);
+
+    /**
+     * @brief Verifies the signature of the given payload using HMAC.
+     *
+     * This method checks whether the provided signature matches the HMAC of the payload data using the stored secret key. It ensures that the payload has not been tampered with during transmission.
+     *
+     * @param data The payload data whose signature needs to be verified.
+     * @param signature The signature to verify against the payload data.
+     * @return True if the signature matches the HMAC of the payload; otherwise, false.
+     */
+    bool VerifySignature(const std::string &data, const std::string &signature);
+
+
+    bool AuthenticateClient(int client_fd);
 };
 
 #endif // SERVER_H

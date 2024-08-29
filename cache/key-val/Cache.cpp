@@ -34,10 +34,6 @@ Cache::Cache(size_t max_size) : max_size_(max_size)
     // Register the file logger with the LoggerManager to handle logging
     LoggerManager::getInstance().addLogger(file_logger_);
 
-    // Log the cache initialization message
-    file_logger_->info("LRU Cache initialized with max size: " + std::to_string(max_size_));
-    std::cout << "LRU Cache initialized with max size: " << max_size_ << std::endl;
-
     // Start the background thread for cache cleanup
     // This thread will periodically remove expired cache items to ensure the cache remains efficient
     std::thread(&Cache::Cleanup, this).detach();

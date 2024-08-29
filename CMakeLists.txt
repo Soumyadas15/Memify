@@ -42,6 +42,8 @@ include_directories(
 add_executable(Memify
     src/main.cpp
     server/Server.cpp
+    server/AuthenticateClient.cpp
+    server/VerifySgnature.cpp
 
     cache/key-val/Cache.cpp
     cache/key-val/CacheSet.cpp

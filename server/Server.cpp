@@ -113,10 +113,18 @@ void Server::Start()
             continue;
         }
 
-        std::cout << "Client connected" << std::endl;
+        std::cout << "Client attempting to connect" << std::endl;
 
-        // Create a new thread to handle the client using ConnectionHandler.
-        std::thread(&ConnectionHandler::HandleClient, ConnectionHandler(cache_, geo_cache_, time_series_cache_, client_fd, secret_key_)).detach();
+        if(AuthenticateClient(client_fd))
+        {
+            std::cout << "Client authenticated and connected" << std::endl;
+            std::thread(&ConnectionHandler::HandleClient, ConnectionHandler(cache_, geo_cache_, time_series_cache_, client_fd, secret_key_)).detach();
+        }
+        else
+        {
+            std::cout << "Client authentication failed. Closing connection." << std::endl;
+            close(client_fd);
+        }
     }
 
     // Close the server socket once the server stops.
