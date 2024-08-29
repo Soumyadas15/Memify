@@ -119,7 +119,7 @@ void MessageProcessor::HandleCommand(const MESPObject &obj, std::string &respons
         }
         else if (command == "GEODISTANCE")
         {
-            // TODO: Implement a feature to retrieve a list of coordinates within a given radius (km)
+            HandleGeoDistance(obj, response);
         }
         else
         {

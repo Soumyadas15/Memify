@@ -8,11 +8,12 @@ find_package(OpenSSL REQUIRED)
 include_directories(
     ${PROJECT_SOURCE_DIR}/server
 
-    ${PROJECT_SOURCE_DIR}/cache
+    ${PROJECT_SOURCE_DIR}/cache/key-val
     ${PROJECT_SOURCE_DIR}/cache/r-tree
     ${PROJECT_SOURCE_DIR}/cache/time-series
 
     ${PROJECT_SOURCE_DIR}/cache/geopoints
+    ${PROJECT_SOURCE_DIR}/cache/geopoints/utils
 
     ${PROJECT_SOURCE_DIR}/core
 
@@ -42,18 +43,22 @@ add_executable(Memify
     src/main.cpp
     server/Server.cpp
 
-    cache/Cache.cpp
-    cache/CacheSet.cpp
-    cache/CacheGet.cpp
-    cache/CacheDelete.cpp
-    cache/CacheCleanup.cpp
-    cache/CacheMoveToFront.cpp
-    cache/CacheEvict.cpp
+    cache/key-val/Cache.cpp
+    cache/key-val/CacheSet.cpp
+    cache/key-val/CacheGet.cpp
+    cache/key-val/CacheDelete.cpp
+    cache/key-val/CacheCleanup.cpp
+    cache/key-val/CacheMoveToFront.cpp
+    cache/key-val/CacheEvict.cpp
 
     cache/geopoints/GeoCache.cpp
     cache/geopoints/Evict.cpp
     cache/geopoints/SetGeoPoint.cpp
     cache/geopoints/GetGeoPoint.cpp
+    cache/geopoints/GetGeoDistance.cpp
+    cache/geopoints/GeoPoint.cpp
+
+    cache/geopoints/utils/GeoHash.c
 
     cache/time-series/TimeSeriesCache.cpp
 
@@ -73,12 +78,15 @@ add_executable(Memify
     connection/message/MessageProcessor.cpp
     connection/message/handlers/HandleErrors.cpp
     connection/message/handlers/HandleErrors.cpp
+
     connection/message/handlers/HandleGet.cpp
     connection/message/handlers/HandleSet.cpp
     connection/message/handlers/HandlePing.cpp
+
     connection/message/handlers/geolocation/HandleGeoSet.cpp
     connection/message/handlers/geolocation/HandleGeoGet.cpp
     connection/message/handlers/geolocation/HandleGeoRadius.cpp
+    connection/message/handlers/geolocation/HandleGeoDistance.cpp
 
     connection/response/ResponseSender.cpp
 

@@ -63,6 +63,11 @@ private:
      */
     void HandleCommand(const MESPObject &obj, std::string &response);
 
+
+
+
+
+
     /**
      * @brief Handles the "PING" command.
      *
@@ -71,6 +76,13 @@ private:
      * @param response The response string to be set to "PONG".
      */
     void HandlePing(std::string &response);
+
+
+
+
+
+
+
 
     /**
      * @brief Handles the "SET" command.
@@ -94,6 +106,17 @@ private:
      */
     void HandleGet(const MESPObject &obj, std::string &response);
 
+
+
+
+
+
+
+
+
+
+
+
     /**
      * @brief Handles the "GEOSET" command.
      *
@@ -106,6 +129,17 @@ private:
     void HandleGeoSet(const MESPObject &obj, std::string &response);
 
     /**
+     * @brief Handles the "GEODISTANCE" command.
+     *
+     * Parses the arguments for the GEODISTANCE command and stores the location key, name and its coordinates in the cache.
+     * Optionally accepts a duration for expiration.
+     *
+     * @param obj The parsed MESP object containing the GEODISTANCE command and its arguments.
+     * @param response The response string to be populated based on the execution of the GEODISTANCE command.
+     */
+    void HandleGeoDistance(const MESPObject &obj, std::string &response);
+
+    /**
      * @brief Handles the "GEOGET" command.
      *
      * Parses the arguments for the GEOGET command and finds the name and cordinates of a place by given key.
@@ -115,6 +149,17 @@ private:
      * @param response The response string to be populated based on the execution of the GEOGET command.
      */
     void HandleGeoGet(const MESPObject &obj, std::string &response);
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -52,7 +52,16 @@ public:
      */
     bool GetGeoPoint(const std::string &key, const std::string &name, GeoPoint &point) override;
 
-private:
+    /**
+     * @brief Calculates the distance between two geo-spatial points, accounting for both
+     *        surface distance on the Earth's sphere and elevation difference.
+     *
+     * @param point1 The first geo-spatial point
+     * @param point2 The second geo-spatial point
+     */
+    double GetGeoDistance(const GeoPoint &point1, const GeoPoint &point2) override;
+
+private : 
     size_t max_size_;
     std::unordered_map<std::string, std::unordered_map<std::string, GeoPoint>> geo_items_;
     std::list<std::string> usage_order_; ///< A list to keep track of the usage order of keys, implementing LRU eviction.

@@ -4,8 +4,8 @@
 
 void MessageProcessor::HandleGeoSet(const MESPObject &obj, std::string &response)
 {
-    // Validate that the command has 5 elements (GEOSET, key, value, latitude, longitude)
-    if (obj.arrayValue.size() != 6)
+    // Validate that the command has at least 5 elements (GEOSET, key, value, latitude, longitude)
+    if (obj.arrayValue.size() < 5 || obj.arrayValue.size() > 6)
     {
         HandleInvalidCommandFormat(response);
         return;
@@ -36,7 +36,10 @@ void MessageProcessor::HandleGeoSet(const MESPObject &obj, std::string &response
 
             // Update the geo cache with the GeoPoint
             geo_cache_->SetGeoPoint(key, geoPoint);
-            response = "OK";
+            response = "Name: " + geoPoint.name +
+                       ", Latitude: " + std::to_string(geoPoint.latitude) +
+                       ", Longitude: " + std::to_string(geoPoint.longitude) +
+                       ", Elevation: " + std::to_string(geoPoint.elevation);
         }
         else
         {
