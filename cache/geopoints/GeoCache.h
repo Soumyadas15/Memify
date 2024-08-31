@@ -65,7 +65,7 @@ private :
     size_t max_size_;
     std::unordered_map<std::string, std::unordered_map<std::string, GeoPoint>> geo_items_;
     std::list<std::string> usage_order_; ///< A list to keep track of the usage order of keys, implementing LRU eviction.
-    typedef RTree<std::string, double, 2, double> RTreeType;
+    typedef RTree<std::string, float, 2, float> RTreeType;
     RTreeType rtree_;
     std::mutex mutex_; ///< A mutex to ensure thread-safe operations on the cache.
     std::shared_ptr<FileLogger> file_logger_;

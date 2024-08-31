@@ -84,6 +84,7 @@ add_executable(Memify
     connection/message/handlers/HandleGet.cpp
     connection/message/handlers/HandleSet.cpp
     connection/message/handlers/HandlePing.cpp
+    connection/message/handlers/HandleDelete.cpp
 
     connection/message/handlers/geolocation/HandleGeoSet.cpp
     connection/message/handlers/geolocation/HandleGeoGet.cpp

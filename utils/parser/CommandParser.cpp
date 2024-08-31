@@ -64,6 +64,8 @@ std::string CommandParser::serializeResponse(const MESPObject &obj)
         return serializeError(obj.stringValue);
     case MESPType::Integer:
         return serializeInteger(obj.intValue);
+    case MESPType::Float:
+        return serializeFloat(obj.floatValue);
     case MESPType::BulkString:
         return serializeBulkString(obj.stringValue);
     case MESPType::Array:

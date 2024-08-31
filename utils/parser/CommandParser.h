@@ -27,7 +27,7 @@ struct MESPObject
     MESPObject()
         : type(MESPType::SimpleString), intValue(0), floatValue(0.0f) {}
 
-    // Constructor for SimpleString and Error types
+    // Constructor for SimpleString, Error, and BulkString types
     MESPObject(MESPType t, const std::string &str)
         : type(t), stringValue(str), intValue(0), floatValue(0.0f) {}
 
@@ -37,15 +37,15 @@ struct MESPObject
 
     // Constructor for Float type
     MESPObject(MESPType t, float f)
-        : type(t), floatValue(f) {}
+        : type(t), intValue(0), floatValue(f) {}
 
     // Constructor for Array type
-    MESPObject(MESPType t)
-        : type(t), intValue(0), floatValue(0.0f) {}
-
-    // Constructor for Array with elements
     MESPObject(MESPType t, const std::vector<MESPObject> &arr)
         : type(t), arrayValue(arr), intValue(0), floatValue(0.0f) {}
+
+    // Constructor for MESPType
+    MESPObject(MESPType t)
+        : type(t), intValue(0), floatValue(0.0f) {}
 };
 
 // Class responsible for parsing and serializing MESP objects

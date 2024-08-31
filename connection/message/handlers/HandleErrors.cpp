@@ -13,7 +13,11 @@
  */
 void MessageProcessor::HandleInvalidCommand(std::string &response)
 {
-    response = "INVALID COMMAND";
+    std::string res = "INVALID COMMAND: Invalid command";
+
+    MESPObject resObj(MESPType::BulkString, res);
+    std::string serializedResponse = CommandParser::serializeResponse(resObj);
+    response = serializedResponse;
 }
 
 /**
@@ -28,7 +32,12 @@ void MessageProcessor::HandleInvalidCommand(std::string &response)
  */
 void MessageProcessor::HandleInvalidCommandFormat(std::string &response)
 {
-    response = "INVALID COMMAND FORMAT";
+
+    std::string res = "INVALID COMMAND: Invalid command format";
+
+    MESPObject resObj(MESPType::BulkString, res);
+    std::string serializedResponse = CommandParser::serializeResponse(resObj);
+    response = serializedResponse;
 }
 
 /**
@@ -43,5 +52,9 @@ void MessageProcessor::HandleInvalidCommandFormat(std::string &response)
  */
 void MessageProcessor::HandleInvalidRespType(std::string &response)
 {
-    response = "INVALID RESP TYPE";
+    std::string res = "INVALID COMMAND: Invalid MESP type";
+
+    MESPObject resObj(MESPType::BulkString, res);
+    std::string serializedResponse = CommandParser::serializeResponse(resObj);
+    response = serializedResponse;
 }

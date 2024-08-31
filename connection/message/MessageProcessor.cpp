@@ -52,6 +52,16 @@ void MessageProcessor::HandleMessage(const std::string &message, std::string &re
     }
 }
 
+
+
+
+
+
+
+
+
+
+
 /**
  * @brief Handles a parsed MESP command object and generates an appropriate response.
  *
@@ -108,6 +118,10 @@ void MessageProcessor::HandleCommand(const MESPObject &obj, std::string &respons
         else if (command == "GET")
         {
             HandleGet(obj, response);
+        }
+        else if (command == "DELETE")
+        {
+            HandleDelete(obj, response);
         }
         else if (command == "GEOSET")
         {

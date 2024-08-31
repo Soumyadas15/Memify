@@ -11,9 +11,9 @@
 struct GeoPoint
 {
     std::string name;   ///< The name associated with the geographical point.
-    double latitude;    ///< The latitude of the geographical point.
-    double longitude;   ///< The longitude of the geographical point.
-    double elevation;   ///< The elevation of the geographical point.
+    float latitude;    ///< The latitude of the geographical point.
+    float longitude;   ///< The longitude of the geographical point.
+    float elevation;   ///< The elevation of the geographical point.
     uint64_t geoHash;   ///< The GeoHash integer representation of the geographical point.
 
     /**
@@ -29,7 +29,7 @@ struct GeoPoint
      * @param longitude The longitude of the geographical point.
      * @param elevation The elevation of the geographical point.
      */
-    GeoPoint(const std::string &name, double latitude, double longitude, double elevation)
+    GeoPoint(const std::string &name, float latitude, float longitude, float elevation)
         : name(name), latitude(latitude), longitude(longitude), elevation(elevation)
     {
         geoHash = calculateGeoHash(latitude, longitude);
@@ -42,7 +42,7 @@ struct GeoPoint
      * @param longitude The longitude of the geographical point.
      * @return The GeoHash as a 64-bit integer.
      */
-    uint64_t calculateGeoHash(double latitude, double longitude);
+    uint64_t calculateGeoHash(float latitude, float longitude);
 };
 
 #endif // GEOPROINT_H

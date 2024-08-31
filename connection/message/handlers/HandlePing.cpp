@@ -4,15 +4,28 @@
 /**
  * @brief Handles the "PING" command by generating a "PONG" response.
  *
- * This method processes the "PING" command by setting the response string to "PONG".
- * It is used to verify that the server is operational and responsive.
+ * This method processes the "PING" command and sets the response string to "PONG".
+ * The "PING" command is typically used to verify that the server is operational and responsive.
  *
- * @param response A reference to the output string that will be populated with the response message.
+ * @param response A reference to a `std::string` where the "PONG" response message will be stored and returned.
  *
- * The method performs the following:
- * - Sets the response string to "PONG".
+ * The method performs the following steps:
+ * - Creates a `MESPObject` with type `BulkString` and value "PONG".
+ * - Serializes this `MESPObject` into a string format using `CommandParser::serializeResponse`.
+ * - Assigns the serialized string to the `response` parameter.
+ *
+ * Example:
+ * If the server receives a "PING" command, the response will be "PONG".
  */
 void MessageProcessor::HandlePing(std::string &response)
 {
-    response = "PONG";
+    // Create a MESPObject with type BulkString and value "PONG"
+    MESPObject resObj(MESPType::BulkString, "PONG");
+
+    // Serialize the MESPObject into a string format
+    std::string serializedResponse = CommandParser::serializeResponse(resObj);
+
+    // Set the response parameter to the serialized string
+    response = serializedResponse;
+    return;
 }

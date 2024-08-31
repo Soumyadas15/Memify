@@ -106,6 +106,16 @@ private:
      */
     void HandleGet(const MESPObject &obj, std::string &response);
 
+    /**
+     * @brief Handles the "DELETE" command.
+     *
+     * Deletes the value associated with the provided key from the cache.
+     * Sets the response to the "SUCCESS" if found, or "NOT FOUND" if the key does not exist.
+     *
+     * @param obj The parsed RESP object containing the DELETE command and its arguments.
+     * @param response The response string to be set to "SUCCESS" or "NOT FOUND".
+     */
+    void HandleDelete(const MESPObject &obj, std::string &response);
 
 
 

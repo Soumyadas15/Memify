@@ -1,7 +1,7 @@
 #include "GeoHash.h"
 #include "GeoPoint.h"
 
-uint64_t GeoPoint::calculateGeoHash(double latitude, double longitude)
+uint64_t GeoPoint::calculateGeoHash(float latitude, float longitude)
 {
     GeoHashBits hash;
     GeoHashRange lat_range = {90.0, -90.0};

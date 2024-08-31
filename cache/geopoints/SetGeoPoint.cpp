@@ -26,8 +26,8 @@ void GeoCache::SetGeoPoint(const std::string &key, const GeoPoint &point)
         if (name_it != key_it->second.end())
         {
             // Prepare to remove the existing point from the R-tree
-            double min[3] = {name_it->second.longitude, name_it->second.latitude, name_it->second.elevation};
-            double max[3] = {name_it->second.longitude, name_it->second.latitude, name_it->second.elevation};
+            float min[3] = {name_it->second.longitude, name_it->second.latitude, name_it->second.elevation};
+            float max[3] = {name_it->second.longitude, name_it->second.latitude, name_it->second.elevation};
             rtree_.Remove(min, max, key + ":" + point.name);
         }
     }
@@ -37,8 +37,8 @@ void GeoCache::SetGeoPoint(const std::string &key, const GeoPoint &point)
     }
 
     // Prepare to insert the new point into the R-tree with elevation
-    double min[3] = {point.longitude, point.latitude, point.elevation};
-    double max[3] = {point.longitude, point.latitude, point.elevation};
+    float min[3] = {point.longitude, point.latitude, point.elevation};
+    float max[3] = {point.longitude, point.latitude, point.elevation};
     rtree_.Insert(min, max, key + ":" + point.name); // Use 3D bounding box for the new point
     geo_items_[key][point.name] = point;             // Update the cache with the new point
 
