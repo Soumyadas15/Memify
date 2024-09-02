@@ -201,14 +201,6 @@ GEOELEVATION
 ### Time-Series
 Memify can act like a in memory database to compute time-series data.
 
-Upcoming commands:
-```bash
-GEOROUTE 
-GEODISTANCE 
-GEORADIUS 
-GEOELEVATION
-```
-
 ## ADDITIONAL INFO:
 
 If you're interested in contributing to the project, you can just fork the repo. If you're new to open source, check out [how to contribute to a project](https://docs.github.com/en/get-started/exploring-projects-on-github/contributing-to-a-project)
