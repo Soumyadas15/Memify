@@ -59,6 +59,7 @@ add_executable(Memify
     cache/geopoints/GetGeoPoint.cpp
     cache/geopoints/GetGeoDistance.cpp
     cache/geopoints/GeoPoint.cpp
+    cache/geopoints/GeoPath.cpp
 
     cache/geopoints/utils/GeoHash.c
 
@@ -89,6 +90,7 @@ add_executable(Memify
     connection/message/handlers/geolocation/HandleGeoSet.cpp
     connection/message/handlers/geolocation/HandleGeoGet.cpp
     connection/message/handlers/geolocation/HandleGeoRadius.cpp
+    connection/message/handlers/geolocation/HandleGeoPath.cpp
     connection/message/handlers/geolocation/HandleGeoDistance.cpp
 
     connection/response/ResponseSender.cpp

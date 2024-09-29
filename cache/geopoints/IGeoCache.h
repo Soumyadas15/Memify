@@ -38,6 +38,8 @@ public:
     virtual bool GetGeoPoint(const std::string &key, const std::string &name, GeoPoint &point) = 0;
 
     virtual double GetGeoDistance(const GeoPoint &point1, const GeoPoint &point2) = 0;
+
+    virtual bool GeoPath(const GeoPoint &point1, const GeoPoint &point2) = 0;
 };
 
 #endif // IGEO_CACHE_H

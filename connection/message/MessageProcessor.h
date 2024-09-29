@@ -160,6 +160,17 @@ private:
      */
     void HandleGeoGet(const MESPObject &obj, std::string &response);
 
+    /**
+     * @brief Handles the "GEOPATH" command.
+     *
+     * Parses the arguments for the GEOGET command and finds the name and cordinates of a place by given key.
+     * Optionally accepts a duration for expiration.
+     *
+     * @param obj The parsed MESP object containing the GEOGET command and its arguments.
+     * @param response The response string to be populated based on the execution of the GEOGET command.
+     */
+    void HandleGeoPath(const MESPObject &obj, std::string &response);
+
 
 
 

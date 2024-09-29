@@ -61,6 +61,15 @@ public:
      */
     double GetGeoDistance(const GeoPoint &point1, const GeoPoint &point2) override;
 
+    /**
+     * @brief Adds a path between two geo-spatial points, where the weight of the edge is
+     * the Haversine distance between the points.
+     *
+     * @param point1 The first geo-spatial point
+     * @param point2 The second geo-spatial point
+     */
+    bool GeoPath(const GeoPoint &point1, const GeoPoint &point2) override;
+
 private : 
     size_t max_size_;
     std::unordered_map<std::string, std::unordered_map<std::string, GeoPoint>> geo_items_;
@@ -69,6 +78,7 @@ private :
     RTreeType rtree_;
     std::mutex mutex_; ///< A mutex to ensure thread-safe operations on the cache.
     std::shared_ptr<FileLogger> file_logger_;
+    std::unordered_map<std::string, std::vector<std::pair<std::string, GeoPoint>>> adjList; ///< An adjacency list to keep track of connecting edges.
 
     /**
      * @brief Evicts the least recently used item from the cache.

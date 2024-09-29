@@ -135,6 +135,10 @@ void MessageProcessor::HandleCommand(const MESPObject &obj, std::string &respons
         {
             HandleGeoDistance(obj, response);
         }
+        else if (command == "GEOPATH")
+        {
+            HandleGeoPath(obj, response);
+        }
         else
         {
             HandleInvalidCommand(response);
