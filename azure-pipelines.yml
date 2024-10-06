@@ -1,0 +1,19 @@
+trigger:
+- main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- script: sudo apt-get update && sudo apt-get install -y build-essential cmake
+  displayName: 'Install dependencies'
+
+- script: |
+    mkdir build
+    cd build
+    cmake ..
+    make
+  displayName: 'Build'
+
+- script: echo "Build completed"
+  displayName: 'Post-build script'
