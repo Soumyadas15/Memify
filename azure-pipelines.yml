@@ -4,16 +4,24 @@ trigger:
 pool:
   vmImage: 'ubuntu-latest'
 
-steps:
-- script: sudo apt-get update && sudo apt-get install -y build-essential cmake
-  displayName: 'Install dependencies'
+stages:
+- stage: Build
+  displayName: Build and Post-Build
+  jobs:
+  - job: BuildJob
+    displayName: Build the application
+    steps:
+    - script: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential cmake
+      displayName: 'Install dependencies'
+    
+    - script: |
+        mkdir -p build
+        cd build
+        cmake ..
+        make
+      displayName: 'Compile and build the project'
 
-- script: |
-    mkdir build
-    cd build
-    cmake ..
-    make
-  displayName: 'Build'
-
-- script: echo "Build completed"
-  displayName: 'Post-build script'
+    - script: echo "Build completed"
+      displayName: 'Post-build notification'
