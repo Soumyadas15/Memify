@@ -1,15 +1,12 @@
-name: Azure CI/CD Pipeline
+name: ACR Build and Push
 
 on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-      - main
 
 jobs:
-  build-and-deploy:
+  build-and-push:
     runs-on: ubuntu-latest
 
     steps:
@@ -22,26 +19,17 @@ jobs:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
 
     - name: Log in to ACR
-      run: |
-        az acr login --name othemaRegistry
+      uses: azure/docker-login@v1
+      with:
+        login-server: YourRegistryName.azurecr.io
+        client-id: ${{ secrets.AZURE_CLIENT_ID }}
+        client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
+        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
 
     - name: Build the Docker image
       run: |
-        docker build -t othemaRegistry.azurecr.io/memify:${{ github.sha }} .
+        docker build -t YourRegistryName.azurecr.io/memify:${{ github.sha }} .
 
     - name: Push the Docker image
       run: |
-        docker push othemaRegistry.azurecr.io/memify:${{ github.sha }}
-
-    - name: Deploy to Azure Container Instances
-      run: |
-        az container create \
-          --resource-group YourResourceGroup \
-          --name othema-dragon-421 \
-          --image othemaRegistry.azurecr.io/memify:${{ github.sha }} \
-          --registry-login-server othemaRegistry.azurecr.io \
-          --registry-username $(az acr credential show --name othemaRegistry --query "username" --output tsv) \
-          --registry-password $(az acr credential show --name othemaRegistry --query "passwords[0].value" --output tsv) \
-          --dns-name-label othema.region.azurecontainer.io \
-          --ports 6379 \
-          --environment-variables LINK=YourLink PORT=YourPort SECURITY_KEY=YourSecurityKey
+        docker push YourRegistryName.azurecr.io/memify:${{ github.sha }}
