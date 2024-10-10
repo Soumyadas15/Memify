@@ -75,7 +75,7 @@ void MessageProcessor::HandleSet(const MESPObject &obj, std::string &response)
         // Create MESPObjects for the key, value, and duration
         MESPObject keyMespObj(MESPType::BulkString, key);
         MESPObject valMespObj(MESPType::BulkString, value);
-        MESPObject durationMespObj(MESPType::Integer, duration.count());
+        MESPObject durationMespObj(MESPType::Integer, static_cast<long long>(duration.count()));
 
         // Construct a response array with the MESPObjects
         std::vector<MESPObject> responseArray = {keyMespObj, valMespObj, durationMespObj};
