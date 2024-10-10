@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     cmake \
     libssl-dev \
-    uuid-runtime \  # Install uuid-runtime for generating security keys
+    uuid-runtime \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
