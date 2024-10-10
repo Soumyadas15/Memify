@@ -1,12 +1,15 @@
-name: ACR Build and Push
+name: Azure CI/CD Pipeline
 
 on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
-  build-and-push:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -19,17 +22,13 @@ jobs:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
 
     - name: Log in to ACR
-      uses: azure/docker-login@v1
-      with:
-        login-server: YourRegistryName.azurecr.io
-        client-id: ${{ secrets.AZURE_CLIENT_ID }}
-        client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
-        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+      run: |
+        az acr login --name othemaRegistry
 
     - name: Build the Docker image
       run: |
-        docker build -t YourRegistryName.azurecr.io/memify:${{ github.sha }} .
+        docker build -t othemaRegistry.azurecr.io/memify:${{ github.sha }} .
 
     - name: Push the Docker image
       run: |
-        docker push YourRegistryName.azurecr.io/memify:${{ github.sha }}
+        docker push othemaRegistry.azurecr.io/memify:${{ github.sha }}
