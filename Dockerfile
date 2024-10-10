@@ -19,8 +19,8 @@ WORKDIR /app/Memify
 # Copy the entire project directory into the container
 COPY . .
 
-# Move the config.ini file one directory up from the current directory
-RUN mv config.ini ../
+# Copy the config.ini.example file and rename it to config.ini
+RUN cp config.ini.example ../config.ini
 
 # Run CMake to configure the project
 RUN cmake .
