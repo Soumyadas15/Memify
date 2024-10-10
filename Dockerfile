@@ -9,6 +9,7 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     cmake \
     libssl-dev \
+    uuid-runtime \  # Install uuid-runtime for generating security keys
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -27,8 +28,19 @@ RUN cmake .
 # Build the project using make
 RUN make
 
-# Set the entrypoint to the Memify executable
-ENTRYPOINT ["./Memify"]
+# Expose the application's default port
+EXPOSE 6379
 
-# Set default arguments for the ENTRYPOINT
-CMD ["default_secret_key", "default_port"]
+# Add the entrypoint script
+COPY entrypoint.sh /app/entrypoint.sh
+
+# Make the script executable
+RUN chmod +x /app/entrypoint.sh
+
+# Set the entrypoint to the script
+ENTRYPOINT ["/app/entrypoint.sh"]
+
+
+az ad sp create-for-rbac --name "memifyGithubActions" --role contributor \
+  --scopes /subscriptions/9abb6a50-fb7c-4649-ab21-abb63bc3a574/resourceGroups/othema_group \
+  --sdk-auth

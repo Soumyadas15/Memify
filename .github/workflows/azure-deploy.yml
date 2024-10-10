@@ -1,0 +1,47 @@
+name: Azure CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out the code
+      uses: actions/checkout@v2
+
+    - name: Log in to Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Log in to ACR
+      run: |
+        az acr login --name othemaRegistry
+
+    - name: Build the Docker image
+      run: |
+        docker build -t othemaRegistry.azurecr.io/memify:${{ github.sha }} .
+
+    - name: Push the Docker image
+      run: |
+        docker push othemaRegistry.azurecr.io/your_app_image:${{ github.sha }}
+
+    - name: Deploy to Azure Container Instances
+      run: |
+        az container create \
+          --resource-group YourResourceGroup \
+          --name othema-dragon-421 \
+          --image othemaRegistry.azurecr.io/your_app_image:${{ github.sha }} \
+          --registry-login-server othemaRegistry.azurecr.io \
+          --registry-username $(az acr credential show --name othemaRegistry --query "username" --output tsv) \
+          --registry-password $(az acr credential show --name othemaRegistry --query "passwords[0].value" --output tsv) \
+          --dns-name-label othema.region.azurecontainer.io \
+          --ports 6379 \
+          --environment-variables LINK=YourLink PORT=YourPort SECURITY_KEY=YourSecurityKey
