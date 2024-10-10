@@ -31,14 +31,14 @@ jobs:
 
     - name: Push the Docker image
       run: |
-        docker push othemaRegistry.azurecr.io/your_app_image:${{ github.sha }}
+        docker push othemaRegistry.azurecr.io/memify:${{ github.sha }}
 
     - name: Deploy to Azure Container Instances
       run: |
         az container create \
           --resource-group YourResourceGroup \
           --name othema-dragon-421 \
-          --image othemaRegistry.azurecr.io/your_app_image:${{ github.sha }} \
+          --image othemaRegistry.azurecr.io/memify:${{ github.sha }} \
           --registry-login-server othemaRegistry.azurecr.io \
           --registry-username $(az acr credential show --name othemaRegistry --query "username" --output tsv) \
           --registry-password $(az acr credential show --name othemaRegistry --query "passwords[0].value" --output tsv) \
